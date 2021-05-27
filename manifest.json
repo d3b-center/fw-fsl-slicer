@@ -1,0 +1,49 @@
+{
+  "name": "fsl-slicer",
+  "label": "FSL slicer",
+  "description": "This tool implements FSL's slicer command for generating images.",
+  "author": "Ariana Familiar",
+  "maintainer": "Ariana <familiara@chop.edu>",
+  "source": "https://github.com/d3b-center/fw-fsl-slicer",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "custom": {
+    "gear-builder": {
+      "category": "analysis",
+      "image": "chop.flywheel.io/fsl-slicer:0.0.0"
+    },
+    "flywheel": {
+      "suite": "FSL"
+    }
+  },
+  "inputs": {
+    "input": {
+      "base": "file",
+      "description": "Base image (nifti).",
+      "type": {
+        "enum": [
+          "nifti"
+        ]
+      }
+    }
+  },
+  "config": {
+    "mid_slices": {
+      "default": "<outputname>",
+      "description": "output mid-sagittal, -coronal and -axial slices into one image.",
+      "type": "string",
+      "id": "-a"
+    }
+  },
+  "environment":{
+    "FSLDIR":"/usr/share/fsl/6.0",
+    "FSL_DIR":"${FSLDIR}",
+    "PWD":"/usr/share/fsl/6.0",
+    "FSLMULTIFILEQUIT":"TRUE",
+    "PATH":"/usr/share/fsl/6.0/bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "POSSUMDIR":"/usr/share/fsl/6.0",
+    "FSLTCLSH":"/usr/bin/tclsh",
+    "FSLWISH":"/usr/bin/wish",
+    "FSLOUTPUTTYPE":"NIFTI_GZ"
+  }
+}
