@@ -10,7 +10,7 @@
   "custom": {
     "gear-builder": {
       "category": "analysis",
-      "image": "chop.flywheel.io/fsl-slicer:0.0.0"
+      "image": "afam00/fsl-slicer:0.0.0"
     },
     "flywheel": {
       "suite": "FSL"
@@ -29,9 +29,9 @@
   },
   "config": {
     "mid_slices": {
-      "default": "<outputname>",
+      "default": false,
       "description": "output mid-sagittal, -coronal and -axial slices into one image.",
-      "type": "string",
+      "type": "boolean",
       "id": "-a"
     }
   },

@@ -14,8 +14,6 @@ CONFIG_FILE=$FLYWHEEL_BASE/config.json
 
 ###############################################################################
 # Configure the ENV
-chmod +x /etc/fsl/5.0/fsl.sh
-source /etc/fsl/5.0/fsl.sh
 export USER=Flywheel
 
 
@@ -32,9 +30,8 @@ mid_slices_flag=$(jq -r <$MANIFEST '''.config.mid_slices.id')
 if [[ -f $CONFIG_FILE ]]; then
   echo "$CONTAINER  $CONFIG_FILE found. Loading config..."
 
-  if [[ $(jq -r <$CONFIG_FILE '''.config.mid_slices') != '<outputname>' ]]; then
+  if [[ $(jq -r <$CONFIG_FILE '''.config.mid_slices') == 'true' ]]; then
     run_mid_slices=1
-    ouput_fn=$(jq -r <$CONFIG_FILE '''.config.mid_slices')
   fi
 
   # if [[ $(jq -r <$CONFIG_FILE '''.config.binary_mask') == 'true' ]]; then
@@ -59,9 +56,8 @@ if [[ -f $CONFIG_FILE ]]; then
 else
   echo "$CONTAINER  $CONFIG_FILE not found. Loading defaults from $MANIFEST..."
 
-  if [[ $(jq -r <$MANIFEST '''.config.mid_slices.default') != '<outputname>' ]]; then
+  if [[ $(jq -r <$MANIFEST '''.config.mid_slices.default') == 'true' ]]; then
     run_mid_slices=1
-    ouput_fn=$(jq -r <$CONFIG_FILE '''.config.mid_slices.default')
   fi
 
   # if [[ $(jq -r <$MANIFEST '''.config.binary_mask.default') == 'true' ]]; then
@@ -100,7 +96,7 @@ if [[ -f $input_file ]]; then
 
   ################# MID-SLICES #################
   if [[ run_mid_slices -eq 1 ]]; then
-    slicer "$input_file" "$mid_slices_flag" "$output_fn".png
+    slicer "$input_file" "$mid_slices_flag" "${OUTPUT_DIR}/sliced_image.png"
   fi
 
   ################# SKULL STRIPPING / MASK #################
