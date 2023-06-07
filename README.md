@@ -8,4 +8,4 @@ This gear implements a basic usage of [FSL SLICER](https://fsl.fmrib.ox.ac.uk/fs
 
 ### Configuration
 
-* mid_slices: output mid-sagittal, -coronal and -axial slices into one image.
+* mid_slices (default=false): output mid-sagittal, -coronal and -axial slices into one image.
