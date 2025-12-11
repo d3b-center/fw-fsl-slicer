@@ -1,10 +1,8 @@
-# Creates docker container
+# Creates docker image
 
 #############################################
 # Select the OS
 FROM flywheel/fsl-base:6.0.1
-MAINTAINER Ariana Familiar <familiara@chop.edu>
-
 
 #############################################
 # Install necessary packages

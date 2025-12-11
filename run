@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-CONTAINER="[afam00/fsl-slicer]"
+CONTAINER="[chop.flywheel.io/fsl-slicer]"
 echo -e "$CONTAINER  Initiated"
 
 ###############################################################################
@@ -16,15 +16,12 @@ CONFIG_FILE=$FLYWHEEL_BASE/config.json
 # Configure the ENV
 export USER=Flywheel
 
-
 ###############################################################################
 # Initialize config parameters
 mid_slices=' '
 
 # Generate flags from the manifest
 mid_slices_flag=$(jq -r <$MANIFEST '''.config.mid_slices.id')
-# fractional_intensity_threshold_flag=$(jq -r <$MANIFEST '''.config.fractional_intensity_threshold.id')
-# reg_matrix_flag=$(jq -r <$MANIFEST '''.config.reg_matrix.id')
 
 # Parse config options from CONFIG file or MANIFEST
 if [[ -f $CONFIG_FILE ]]; then
@@ -34,50 +31,12 @@ if [[ -f $CONFIG_FILE ]]; then
     run_mid_slices=1
   fi
 
-  # if [[ $(jq -r <$CONFIG_FILE '''.config.binary_mask') == 'true' ]]; then
-  #   binary_mask=$binary_mask_flag
-  #   run_mask=1
-  # fi
-
-  # if [[ $(jq -r <$CONFIG_FILE '''.config.registration') == 'true' ]]; then
-  #   run_reg=1
-  # fi
-
-  # if [[ $(jq -r <$CONFIG_FILE '''.config.reg_matrix') == 'true' ]]; then
-  #   reg_matrix=$reg_matrix_flag
-  # fi
-
-  # if [[ $(jq -r <$CONFIG_FILE '''.config.orient2std') == 'true' ]]; then
-  #   run_orient=1
-  # fi
-
-  # fractional_intensity_threshold="$fractional_intensity_threshold_flag $(jq -r <$CONFIG_FILE '''.config.fractional_intensity_threshold')"
-
 else
   echo "$CONTAINER  $CONFIG_FILE not found. Loading defaults from $MANIFEST..."
 
   if [[ $(jq -r <$MANIFEST '''.config.mid_slices.default') == 'true' ]]; then
     run_mid_slices=1
   fi
-
-  # if [[ $(jq -r <$MANIFEST '''.config.binary_mask.default') == 'true' ]]; then
-  #   binary_mask=$binary_mask_flag
-  #   run_mask=1
-  # fi
-
-  # if [[ $(jq -r <$MANIFEST '''.config.registration.default') == 'true' ]]; then
-  #   run_reg=1
-  # fi
-
-  # if [[ $(jq -r <$MANIFEST '''.config.reg_matrix.default') == 'true' ]]; then
-  #   reg_matrix=$reg_matrix_flag
-  # fi
-
-  # if [[ $(jq -r <$MANIFEST '''.config.orient2std.default') == 'true' ]]; then
-  #   run_orient=1
-  # fi
-
-  # fractional_intensity_threshold="$fractional_intensity_threshold_flag $(jq -r <$MANIFEST '''.config.fractional_intensity_threshold.default')"
 
 fi
 
@@ -92,52 +51,21 @@ if [[ -f $input_file ]]; then
   #   mv "${input_file}" "${input_file_despaced}"
   # fi
   echo "$CONTAINER  Running on `basename "$input_file"`"
-  # output_file_base=$OUTPUT_DIR/$(basename "$input_file" .nii.gz)
+  output_file_base=$(basename "$input_file" .nii.gz)
 
-  ################# MID-SLICES #################
+  ################# MAIN PROCESS #################
   if [[ run_mid_slices -eq 1 ]]; then
-    slicer "$input_file" "$mid_slices_flag" "${OUTPUT_DIR}/sliced_image.png"
+    slicer "$input_file" "$mid_slices_flag" "${OUTPUT_DIR}/${output_file_base}_sliced.png"
+  else
+    slicer "$input_file" "${OUTPUT_DIR}/${output_file_base}_sliced.png"
   fi
-
-  ################# SKULL STRIPPING / MASK #################
-  # if [[ run_strip -eq 1 ]]; then
-  #   echo "$CONTAINER  Performing skull stripping"
-  #   BET_OPTIONS="$fractional_intensity_threshold $binary_mask"
-  #   echo -e "$CONTAINER  BET options are: ${BET_OPTIONS}"
-  #   bet "$input_file" "$output_file_base"_strip $BET_OPTIONS -o
-  # else
-  #   echo "$CONTAINER  Skipping skull stripping"
-  # fi
-
-  ################# REGISTRATION #################
-  # if [[ run_reg -eq 1 ]]; then
-  #   reg_file=$(find $REG_FILE_DIR/* -maxdepth 0 -type f -name "*.nii*")
-  #   if [[ -f $reg_file ]]; then
-  #     echo "$CONTAINER  Performing registration"
-  #     if [ "$reg_matrix" "!=" ' ' ]; then
-  #       reg_matrix="$reg_matrix $OUTPUT_DIR/transform.mat"
-  #     fi
-  #     FLIRT_OPTIONS="$reg_matrix"
-  #     # run registration
-  #     flirt -in "$input_file" -ref $reg_file -out "$output_file_base"_reg $FLIRT_OPTIONS
-  #     # generate image of results
-  #     slicesdir -p "$output_file_base"_reg $reg_file
-  #     mv slicesdir/*flywheel* output/reg_results.png
-  #     rm -r slicesdir
-  #   else
-  #     echo "$CONTAINER  No registration file found!"
-  #     exit 1
-  #   fi
-  # else
-  #   echo "$CONTAINER  Skipping registration"
-  # fi
 
 ################# Finish up #################
 STATUS=$?
 else
   echo "$CONTAINER  No valid input file!"
   exit 1
-fi
+fimanifest
 
 # Check exit status
 if [[ $STATUS == 0 ]]
