@@ -1,16 +1,16 @@
 {
   "name": "fsl-slicer",
   "label": "FSL slicer",
-  "description": "This tool implements FSL's slicer command for generating images (png) from a volume (nifti).",
+  "description": "This tool implements FSL's slicer command for generating images (png) from a volume (nifti). By default will create a 4x6 montage of slices through the volume.",
   "author": "D3b-TIRU",
   "url": "https://github.com/d3b-center/fw-fsl-slicer",
   "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/#",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "custom": {
     "gear-builder": {
       "category": "analysis",
-      "image": "chop.flywheel.io/fsl-slicer:0.1.0"
+      "image": "chop.flywheel.io/fsl-slicer:0.1.1"
     },
     "flywheel": {
       "suite": "FSL"

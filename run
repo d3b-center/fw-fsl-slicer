@@ -43,6 +43,7 @@ fi
 ###############################################################################
 # Execute the main processes
 input_file=$(find $INPUT_DIR/* -maxdepth 0 -type f -name "*.nii*")
+echo "$CONTAINER  Input file: $input_file"
 if [[ -f $input_file ]]; then
   
   # input_file_despaced=$(echo -e "${input_file}" | tr -d '[:space:]')
@@ -50,14 +51,18 @@ if [[ -f $input_file ]]; then
   #   input_file=$input_file_despaced
   #   mv "${input_file}" "${input_file_despaced}"
   # fi
-  echo "$CONTAINER  Running on `basename "$input_file"`"
   output_file_base=$(basename "$input_file" .nii.gz)
+  output_file_path=${OUTPUT_DIR}/${output_file_base}_sliced.png
+  echo "$CONTAINER  Ouput file: $output_file_path"
 
   ################# MAIN PROCESS #################
-  if [[ run_mid_slices -eq 1 ]]; then
-    slicer "$input_file" "$mid_slices_flag" "${OUTPUT_DIR}/${output_file_base}_sliced.png"
+  if [[ $run_mid_slices -eq 1 ]]; then
+    echo "$CONTAINER  Running with mid-slices-flag=True"
+    slicer "$input_file" "$mid_slices_flag" "$output_file_path"
+    
   else
-    slicer "$input_file" "${OUTPUT_DIR}/${output_file_base}_sliced.png"
+    echo "$CONTAINER  Running default slicer command"
+    ./slice_nifti.sh "$input_file" "$output_file_path"
   fi
 
 ################# Finish up #################
@@ -65,11 +70,10 @@ STATUS=$?
 else
   echo "$CONTAINER  No valid input file!"
   exit 1
-fimanifest
+fi
 
 # Check exit status
-if [[ $STATUS == 0 ]]
-  then
+if [[ $STATUS == 0 ]]; then
     echo -e "$CONTAINER  Done!"
 
   else

@@ -17,6 +17,7 @@ RUN mkdir -p ${FLYWHEEL}
 WORKDIR ${FLYWHEEL}
 COPY run ${FLYWHEEL}/run
 COPY manifest.json ${FLYWHEEL}/manifest.json
+COPY *.sh ${FLYWHEEL}/
 
 #############################################
 # Configure entrypoint
