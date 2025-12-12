@@ -1,0 +1,25 @@
+# Python stuff
+*.egg-info
+.coverage
+__pycache__
+coverage.xml
+.coverage
+cov.xml
+dist
+junit.xml
+
+# Mac stuff
+.DS_Store
+
+# Editor specific stuff
+.vscode
+.idea/
+
+# Flywheel gear testing
+input/*
+output/*
+work/*
+test_im/*
+config.json
+config.json.back
+.input_map.json
